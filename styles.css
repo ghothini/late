@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --color: #cac8ca;
+}
+
+.main-container {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    background-color: #cec7dd;
+    justify-content: center;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.icons {
+    margin-right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.screen-container {
+    height: 70%;
+    width: 25%;
+    border-radius: 15px;
+    position: relative;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.lateComers {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    left: calc(50% - 20px);
+}
+
+.lateComers span {
+    font-size: xxx-large;
+}
+
+.lateComers small {
+    padding: 4px;
+    background-color: aqua;
+    border-radius: 15px;
+    margin: 0;
+    position: absolute;
+    right: -4px;
+    top: -11px;
+}
+
+.section div {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.border-top-10 {
+    border-top: 1px solid;
+}
+
+.section div:hover {
+    cursor: pointer;
+}
+
+.box-sizing {
+    box-sizing: border-box;
+}
+
+.navBar {
+    height: 10%;
+    display: flex;
+    background-color: blueviolet;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.time p {
+    margin: 0;
+}
+
+.time h3 {
+    margin: 0;
+}
+
+.time div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time {
+    display: flex;
+    gap: 1em;
+}
+
+.text {
+    width: 80%;
+    text-align: center;
+}
+
+.timer-section {
+    height: 90%;
+    background-color: brown;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+.btn {
+    border: none;
+    padding: 5px 20px;
+    background-color: blueviolet;
+    color: white;
+    border-radius: 20px;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.section {
+    height: 90%;
+    background-color: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.moreStyles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.text-area {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.margin-0 {
+    margin: 0;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--color);
+    background-color: white;
+    border-radius: 15px;
+}
+
+.pointer {
+    cursor: pointer;
+}

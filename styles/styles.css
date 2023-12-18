@@ -2,24 +2,42 @@
 
 :root {
     --color: #cac8ca;
+    --nav-bar: #a99c9c;
+    --background: #d7f1e9a8;
+    --blue-v: blueviolet;
 }
 
 .main-container {
     height: 100dvh;
     display: flex;
     align-items: center;
-    background-color: #cec7dd;
+    background-color: #634646;
     justify-content: center;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+.a-center {
+    align-items: center;
+}
+
+.j-center {
+    justify-content: center;
 }
 
 .flex-column {
     display: flex;
     flex-direction: column;
 }
+
+.column {
+    flex-direction: column;
+}
+
+
 
 .icons {
     margin-right: 10px;
@@ -30,12 +48,31 @@ body {
 .screen-container {
     height: 70%;
     width: 25%;
+    background-color: white;
     border-radius: 15px;
     position: relative;
 }
 
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.back-icon {
+    bottom: 20px;
+    right: 18px;
+    font-size: xx-large !important;
+}
+
 .margin-left-10 {
     margin-left: 10px;
+}
+
+.font-xxxlarge {
+    font-size: xxx-large !important;
 }
 
 .lateComers {
@@ -80,7 +117,6 @@ body {
 .navBar {
     height: 10%;
     display: flex;
-    background-color: blueviolet;
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
     align-items: center;
@@ -99,6 +135,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.color-blue {
+    color: var(--blue-v);
+}
+
+.radius-50 {
+    border-radius: 50%;
+}
+
+.bg {
+    background-color: var(--background);
 }
 
 .time {
@@ -133,10 +181,9 @@ body {
 }
 
 .section {
-    height: 90%;
-    background-color: white;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+    height: 73.8%;
+    background-color: var(--background);
+    overflow-y: auto;
 }
 
 .moreStyles {
@@ -155,6 +202,7 @@ body {
     align-items: center;
     gap: 10px;
 }
+
 
 .text-area {
     width: 80%;

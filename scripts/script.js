@@ -1,12 +1,14 @@
-var peopleDiv = document.getElementById('peopleDiv');
-var submitReason = document.getElementById('submitReason');
-var noLatePeople = document.getElementById('noLatePeople');
+const peopleDiv = document.getElementById('peopleDiv');
+const submitReason = document.getElementById('submitReason');
+const noLatePeople = document.getElementById('noLatePeople');
 
 // Move through this one time using map methods to link html code
 var moveOne = [1];
 var count;
+var charactersMax = 25;
+var lateComers = [];
 
-// // For adding or changing members manually to array.
+// // Adding class members manually to array.
 // var lateComers = [{
 //     name: 'thapelo',
 //     reason: 'smoke break',
@@ -24,7 +26,7 @@ var count;
 //     arriveTime: '',
 //     cancel: false
 // }, {
-//     name: 'thabang',
+//     name: 'KATLEGO',
 //     reason: 'pouring petrol',
 //     late: false,
 //     reasonTime: '',
@@ -41,8 +43,73 @@ var count;
 //     cancel: false
 // }]
 
-// // Get people data from localStorage
-var lateComers = JSON.parse(localStorage.getItem('lateComers'));
+
+const addClassList = () => {
+    peopleDiv.innerHTML = `<p>Select a names file for members.</p>
+    <input type="file" id="membersFile">
+    <span class="material-symbols-outlined pointer absolute back-icon" onclick="goToHome()">
+    arrow_back
+    </span>
+    <div class="flex column a-center">
+        <p id="membersCount" class="margin-0">0 members</p>
+        <span class="material-symbols-outlined pointer font-xxxlarge" onclick="goToHome()">
+        groups
+        </span>
+    </div>               `
+    // Add more styles to align this html right
+    peopleDiv.classList.add('moreStyles');
+
+    // Get file input element
+    const fileElement = document.getElementById('membersFile');
+    const membersCount = document.getElementById('membersCount');
+
+    // Change listener for adding file of members and what to do
+    fileElement.addEventListener('change', (e) => {
+        var reader = new FileReader();
+        let files = fileElement.files;
+        const file = files[0]
+        reader.onload = (e) => {
+            const wholeFile = e.target.result;
+            let classList = wholeFile.split('\n');
+            classList.forEach((person, x) => {
+                if (x === classList.length - 1) return;
+                classList[x] = classList[x].replace(classList[x].substr(classList[x].length - 1), '');
+            })
+            console.log(classList);
+            // Reset lateComers array to nothing before assinging members from file
+
+            // Show total no. members of element
+            membersCount.innerHTML = `${classList.length} members`
+
+
+            lateComers = [];
+            classList.forEach((name, x) => {
+                lateComers.push({
+                    name: classList[x],
+                    reason: [],
+                    late: false,
+                    reasonTime: '',
+                    elapsedTime: '',
+                    arriveTime: '',
+                    cancel: false
+                })
+            })
+        }
+        reader.readAsText(file);
+    })
+}
+
+// Function for refreshing current page
+const goToHome = () => {
+    // Save members in local storage
+    localStorage.setItem('lateComers', JSON.stringify(lateComers));
+
+    // Refresh page
+    window.location.reload();
+}
+
+// Get members data from localStorage
+lateComers = JSON.parse(localStorage.getItem('lateComers'));
 
 // Add list of array objects as people's name on home page content in section
 lateComers.map((person, i) => {
@@ -79,31 +146,37 @@ const updateLaters = () => {
 updateLaters();
 
 
-// Capitalize first letter of name to upperCase and return that name
-const camelCharName = (normalText) => normalText.replace(normalText.substr(0, 1), normalText.substr(0, 1).toUpperCase());
+// Capitalize first char of name to upperCase and return that name
+const capitalizeIndex0 = (normalText) => normalText.replace(normalText.substr(0, 1), normalText.substr(0, 1).toUpperCase());
 
 const addReason = (i) => {
     console.log(i);
     moveOne.map((item, x) => {
         peopleDiv.innerHTML =
-            `<p>Why are you late ${camelCharName(lateComers[i].name)}?</p>
+            `<p>Why are you late ${capitalizeIndex0(lateComers[i].name)}?</p>
         <div class="text-area">
-            <p class="margin-0"><small>25</small></p>
-            <textarea name="" id="reasonInput" cols="30" rows="8"></textarea>
+            <p class="margin-0"><small id="characters">25</small></p>
+            <textarea name="" id="reasonInput" oninput="charactersTyped()" cols="30" rows="8"></textarea>
         </div>
         <div class="btn" id="submitReason" onclick="startTimer(${i})"><p class="margin-0">start timer</p></div>`
     })
     peopleDiv.classList.add('moreStyles');
-    // Refresh no. of late people
+    const charactersElement = document.getElementById('characters');
 }
 
+// Function for reducing characters number title according to typing *
+const charactersTyped = () => {
+    if (charactersMax <= 0) return;
+    charactersMax--;
+    charactersElement.value = charactersMax;
+}
 
 
 // Function for adding more reasons to being late
 const moreReasonsTab = (i) => {
     moveOne.map((item, x) => {
         peopleDiv.innerHTML =
-            `<p>What are you still late for ${camelCharName(lateComers[i].name)}?</p>
+            `<p>What are you still late for ${capitalizeIndex0(lateComers[i].name)}?</p>
         <div class="text-area">
             <p class="margin-0"><small>25</small></p>
             <textarea name="" id="reasonInput" cols="30" rows="8"></textarea>
@@ -112,7 +185,7 @@ const moreReasonsTab = (i) => {
     })
     peopleDiv.classList.add('moreStyles');
     // Show the first reason for being late
-    document.getElementById('reasonInput').value = lateComers[i].reason;
+    document.getElementById('reasonInput').value = lateComers[i].reason.push(reason);
 };
 
 // Save updated reason for being late in storage
@@ -129,31 +202,41 @@ const updateReasons = (i) => {
         return;
     }
     // Store reason on correct array position
-    lateComers[i].reason = reason;
+    lateComers[i].reason.push(reason);
 
     localStorage.setItem('lateComers', JSON.stringify(lateComers));
+
+    // Concat all reasons as one string if more than one
+    if (lateComers[i].reason.length > 1) {
+        var reasons;
+        lateComers[i].reason.forEach((reason, x) => {
+            if (x === lateComers[i].reason.length - 1) {
+                reasons += reason;
+                return;
+            }
+            reasons += reason + ',';
+        })
+        console.log(reasons)
+    }
 
     // Refresh browser to go home page
     location.reload();
 }
 
 const showTimer = (i) => {
-
-    // Show time that updates every 1 second
-    setInterval(() => {
-        // Save passed time in array and local storage
-        lateComers[i].elapsedTime = calcElapsedTime(i);
-        localStorage.setItem('lateComers', JSON.stringify(lateComers));
+    // Save passed time in array and local storage
+    lateComers[i].elapsedTime = calcLateTime(i);
+    localStorage.setItem('lateComers', JSON.stringify(lateComers));
 
 
-        // Add class for showing timer tab correctly
-        peopleDiv.classList.add('moreStyles');
-        // Show timer tab with elapsed time
-        moveOne.map((person, indx) => {
-            peopleDiv.innerHTML =
-                `<div class="text flex-column">
-                    <p class="margin-0">You're waiting on ${camelCharName(lateComers[i].name)} for</p>
-                    <p class="margin-0"> "${lateComers[i].reason}"</p>
+    // Add class for showing timer tab correctly
+    peopleDiv.classList.add('moreStyles');
+    // Show timer tab with elapsed time
+    moveOne.map(person => {
+        peopleDiv.innerHTML =
+            `<div class="text flex-column">
+                    <p class="margin-0">You're waiting on ${capitalizeIndex0(lateComers[i].name)} for</p>
+                ${lateComers[i].reason.length === 1 ? `<p class="margin-0"> "${lateComers[i].reason[0]}"</p>` : `<marquee behavior="" direction="">${lateComers[i].reason[0]}, ${lateComers[i].reason[1]}</marquee>`}
                     </div>
                     <div class="time">
                     <div class="hrs">
@@ -173,10 +256,9 @@ const showTimer = (i) => {
                         <p>ms</p>
                     </div>
                     </div>
-                    <div class="btn" id="arrive_${i.toString()}" onclick="arrived(${i})"><p class="margin-0">${camelCharName(lateComers[i].name)} arrived</p></div>
+                    <div class="btn" id="arrive_${i.toString()}" onclick="arrived(${i})"><p class="margin-0">${capitalizeIndex0(lateComers[i].name)} arrived</p></div>
                     <button class="cancel-btn pointer">cancel</button>`;
-        })
-    }, 1000)
+    })
 }
 
 
@@ -186,11 +268,11 @@ const arrived = (i) => {
     // Make late false from true
     lateComers[i].late = false;
     // Default reason
-    lateComers[i].reason = '';
+    lateComers[i].reason = [];
     // Cancel reasonTime to nothing
     lateComers[i].reasonTime = [];
     // // Get time passed between reasoning and cancel/arrival time
-    // let passedTime = calcElapsedTime(i);
+    // let passedTime = calcLateTime(i);
     // lateComers[i].arriveTime = passedTime;
     // Save array data in local Storage
     localStorage.setItem('lateComers', JSON.stringify(lateComers));
@@ -202,13 +284,16 @@ const arrived = (i) => {
 
 
 const startTimer = (i) => {
+    // When done with typing reset typing characters to max 25
+    charactersMax = 25;
+
     // Store user reason for being late in variable
     var reason = document.getElementById('reasonInput').value;
     // Store that reason in array of objects
     if (reason) {
         let char = reason.toString().length;
         if (char > 3) {
-            lateComers[i].reason = reason;
+            lateComers[i].reason.push(reason);
             lateComers[i].late = true;
             localStorage.setItem('lateComers', JSON.stringify(lateComers));
 
@@ -228,7 +313,7 @@ const startTimer = (i) => {
 
             // Show being late time update every 1 second
             setInterval(() => {
-                let passedTime = calcElapsedTime(i);
+                let passedTime = calcLateTime(i);
 
                 // Save elapsed time in array
                 lateComers[i].elapsedTime = passedTime;
@@ -242,7 +327,7 @@ const startTimer = (i) => {
                     peopleDiv.innerHTML =
                         `<div class="text flex-column">
                         <p class="margin-0">Whole class is waiting on <b>YOU</b> for</p>
-                        <p class="margin-0"> "${lateComers[i].reason}"</p>
+                        <p class="margin-0"> "${lateComers[i].reason[0]}"</p>
                         </div>
                         <div class="flex-center">
                         <p class="margin-0"><b>Current waiting time: </b></p>
@@ -286,28 +371,30 @@ const startTimer = (i) => {
 }
 
 
-const calcElapsedTime = (i) => {
-    //Calculate elapsed time since given reason
+//Function for calculating passing time since reporting late reason
+const calcLateTime = (i) => {
+
     // Create current time and determine how long being late;
+    let currentHrs, currentMin, currentSec, currentMs, currentTime;
+    let passedHrs, passedMin, passedSec, passedMs, passedTime;
     var date = new Date();
-    let hrsC, minC, secC, msC, currentTime;
-    let hrsP, minP, secP, msP, passedTime;
-    hrsC = date.getHours();
-    minC = date.getMinutes();
-    secC = date.getSeconds();
-    msC = date.getMilliseconds();
-    currentTime = hrsC + ',' + minC + ',' + secC + ',' + msC + ',';
+
+    currentHrs = date.getHours();
+    currentMin = date.getMinutes();
+    currentSec = date.getSeconds();
+    currentMs = date.getMilliseconds();
+    currentTime = currentHrs + ',' + currentMin + ',' + currentSec + ',' + currentMs + ',';
     currentTime = currentTime.split(',');
 
     // Determine how long being late, hous,minutes,seconds and ms
-    hrsP = currentTime[0] - lateComers[i].reasonTime[0];
-    minP = currentTime[1] - lateComers[i].reasonTime[1];
-    secP = currentTime[2] - lateComers[i].reasonTime[2];
-    msP = currentTime[3] - lateComers[i].reasonTime[3];
-    passedTime = hrsP + ',' + minP + ',' + secP + ',' + msP + ',';
+    passedHrs = currentTime[0] - lateComers[i].reasonTime[0];
+    passedMin = currentTime[1] - lateComers[i].reasonTime[1];
+    passedSec = currentTime[2] - lateComers[i].reasonTime[2];
+    passedMs = currentTime[3] - lateComers[i].reasonTime[3];
+    passedTime = passedHrs + ',' + passedMin + ',' + passedSec + ',' + passedMs + ',';
     passedTime = passedTime.split(',');
 
-    // Switch statement to calculate exact elapsed time (no negativ time e.g -12minutes)
+    // Calculating correct exact passed time (no negativ time e.g -12minutes)
     passedTime.forEach((item, indx) => {
         switch (indx) {
             case 0:
